@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "4f3aee68-01fd-4e4c-8679-46ababa73be5",
+		"name": "Testing Assignment 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23098786"
+	},
+	"item": [
+		{
+			"name": "POST order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json()\r",
+							"pm.test(\"POST Order\", () => {\r",
+							"   let stringData = pm.environment.get(\"orders\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.expect(pm.response.code).to.eql(201);\r",
+							"   pm.response.to.be.withBody;\r",
+							"   pm.response.to.be.json;\r",
+							"   pm.expect(responseJson).include(stringData)\r",
+							"   const objectOfArray = responseJson.items.find(m => m.itemCode === \"123\");\r",
+							"   stringData = pm.environment.get(\"items\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.expect(objectOfArray).include(stringData)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"customerName\": \"Tom Jerry\",\r\n\t\t\"items\": [\r\n\t\t\t{\"itemCode\": \"123\", \"description\": \"IPhone 18X\", \"quantity\": 1}\r\n        ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json().find(m => m.customerName === \"Tom Jerry\");\r",
+							"pm.test(\"GET Order\", () => {\r",
+							"   let stringData = pm.environment.get(\"orders\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.response.to.be.ok;\r",
+							"   pm.response.to.be.withBody;\r",
+							"   pm.response.to.be.json;\r",
+							"   pm.expect(responseJson).include(stringData)\r",
+							"   const objectOfArray = responseJson.items.find(m => m.itemCode === \"123\");\r",
+							"   stringData = pm.environment.get(\"items\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.expect(objectOfArray).include(stringData)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json()\r",
+							"pm.test(\"PUT Order\", () => {\r",
+							"   let stringData = pm.environment.get(\"ordersPUT\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.response.to.be.ok;\r",
+							"   pm.response.to.be.withBody;\r",
+							"   pm.response.to.be.json;\r",
+							"   pm.expect(responseJson).include(stringData)\r",
+							"   const objectOfArray = responseJson.items.find(m => m.itemCode === \"123\");\r",
+							"   stringData = pm.environment.get(\"itemsPUT\")\r",
+							"   stringData = JSON.parse(stringData)\r",
+							"   pm.expect(objectOfArray).include(stringData)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"customerName\": \"Spike Tyke\",\r\n\t\t\"items\": [\r\n\t\t\t{\"itemCode\": \"123\", \"description\": \"IPhone 10X\", \"quantity\": 10}\r\n        ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/orders/adfas",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"adfas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"DELETE Order\", () => {\r",
+							"   pm.expect(pm.response.code).to.eql(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/orders/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
