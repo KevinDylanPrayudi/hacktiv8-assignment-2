@@ -3,6 +3,7 @@ package controller
 import (
 	"assigment-2/database"
 	"assigment-2/models"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -43,10 +44,17 @@ func UpdateOrder(ctx *gin.Context) {
 	order.ID = uint(id)
 	err = db.Where("id = ?", id).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&order).Error
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"message": "The order isn't found",
-		})
-		return
+		if errors.Is(err, gorm.ErrForeignKeyViolated) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+				"message": "u hafta input correct id as query parameter",
+			})
+			return
+		} else {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message:": "u hafta input ID within items in ur request",
+			})
+			return
+		}
 	}
 
 	ctx.JSON(http.StatusOK, order)

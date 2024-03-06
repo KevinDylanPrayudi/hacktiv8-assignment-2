@@ -19,7 +19,7 @@ func PostGresDB() error {
 	db, err = gorm.Open(postgres.New(postgres.Config{
 		DSN:                  "user=postgres password=123 dbname=assignment-2 port=5432 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
-	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
+	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent), TranslateError: true})
 
 	db.AutoMigrate(&models.Order{}, &models.Item{})
 	db.Exec("TRUNCATE items, orders;")
