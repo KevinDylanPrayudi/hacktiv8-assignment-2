@@ -32,7 +32,7 @@ func CreateOrder(ctx *gin.Context) {
 func UpdateOrder(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "The parameter is invalid",
 		})
 		return
@@ -41,10 +41,9 @@ func UpdateOrder(ctx *gin.Context) {
 	db := database.GetDB()
 	ctx.ShouldBind(&order)
 	order.ID = uint(id)
-	order.Items[0].ID = uint(id)
 	err = db.Where("id = ?", id).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&order).Error
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "The order isn't found",
 		})
 		return
@@ -56,7 +55,7 @@ func UpdateOrder(ctx *gin.Context) {
 func DeleteOrder(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "The parameter is invalid",
 		})
 		return
@@ -64,6 +63,12 @@ func DeleteOrder(ctx *gin.Context) {
 	order := models.Order{}
 	db := database.GetDB()
 	order.ID = uint(id)
-	db.Where("id = ?", id).Delete(&order)
+	err = db.Where("id = ?", id).Delete(&order).Error
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Error occured in the server",
+		})
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
