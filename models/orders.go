@@ -26,8 +26,8 @@ func (order *Order) BeforeUpdate(tx *gorm.DB) error {
 	for _, item := range items {
 		if reflect.ValueOf(item).FieldByName("ID").IsZero() {
 			return gorm.ErrRecordNotFound
-		} else {
-			return tx.First(&updatedItem, item.ID).Error
+		} else if err := tx.First(&updatedItem, item.ID).Error; err != nil {
+			return err
 		}
 	}
 	return nil
